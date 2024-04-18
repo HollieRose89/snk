@@ -18,12 +18,14 @@ exports[`should parse /out.svg?{"color_snake":"yellow","color_dots":["#000","#11
     "colorEmpty": "#000",
     "colorSnake": "yellow",
     "dark": undefined,
+    "hideStack": false,
     "sizeCell": 16,
     "sizeDot": 12,
     "sizeDotBorderRadius": 2,
   },
   "filename": "/out.svg",
   "format": "svg",
+  "snakeSize": 4,
 }
 `;
 
@@ -45,12 +47,14 @@ exports[`should parse /out.svg?color_snake=orange&color_dots=#000,#111,#222,#333
     "colorEmpty": "#000",
     "colorSnake": "orange",
     "dark": undefined,
+    "hideStack": false,
     "sizeCell": 16,
     "sizeDot": 12,
     "sizeDotBorderRadius": 2,
   },
   "filename": "/out.svg",
   "format": "svg",
+  "snakeSize": 4,
 }
 `;
 
@@ -83,12 +87,14 @@ exports[`should parse /out.svg?color_snake=orange&color_dots=#000,#111,#222,#333
       "colorEmpty": "#a00",
       "colorSnake": "orange",
     },
+    "hideStack": false,
     "sizeCell": 16,
     "sizeDot": 12,
     "sizeDotBorderRadius": 2,
   },
   "filename": "/out.svg",
   "format": "svg",
+  "snakeSize": 4,
 }
 `;
 
@@ -110,11 +116,13 @@ exports[`should parse path/to/out.gif 1`] = `
     "colorEmpty": "#ebedf0",
     "colorSnake": "purple",
     "dark": undefined,
+    "hideStack": false,
     "sizeCell": 16,
     "sizeDot": 12,
     "sizeDotBorderRadius": 2,
   },
   "filename": "path/to/out.gif",
   "format": "gif",
+  "snakeSize": 4,
 }
 `;
