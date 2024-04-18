@@ -4,8 +4,8 @@ import { palettes } from "./palettes";
 
 const DEFAULTS = {
   hideStack: false,
-  snakeSize: 4
-}
+  snakeSize: 4,
+};
 
 export const parseOutputsOption = (lines: string[]) => lines.map(parseEntry);
 
@@ -32,33 +32,39 @@ export const parseEntry = (entry: string) => {
     if (!(err instanceof SyntaxError)) throw err;
   }
 
-  let hideStack = DEFAULTS.hideStack
+  let hideStack = DEFAULTS.hideStack;
 
   if (sp.has("hide_stack")) {
-    hideStack = sp.get("hide_stack") === "true"
+    hideStack = sp.get("hide_stack") === "true";
   }
 
-  let snakeSize = DEFAULTS.snakeSize
+  let snakeSize = DEFAULTS.snakeSize;
 
   if (sp.has("snake_size")) {
     try {
-      const paramsSnakeSize = Number(sp.get("snake_size"))
+      const paramsSnakeSize = Number(sp.get("snake_size"));
 
       if (Number.isNaN(paramsSnakeSize)) {
-        throw new Error("Invalid snake_size provided, snake_size must be a number");
+        throw new Error(
+          "Invalid snake_size provided, snake_size must be a number"
+        );
       }
 
-      if(!Number.isInteger(paramsSnakeSize)){
-        throw new Error("Invalid snake_size provided, snake_size must be an integer");
+      if (!Number.isInteger(paramsSnakeSize)) {
+        throw new Error(
+          "Invalid snake_size provided, snake_size must be an integer"
+        );
       }
 
-      if(paramsSnakeSize <= 0 || paramsSnakeSize > 9){
-        throw new Error("Invalid snake_size provided, snake_size must be between 1 and 9");
+      if (paramsSnakeSize <= 0 || paramsSnakeSize > 9) {
+        throw new Error(
+          "Invalid snake_size provided, snake_size must be between 1 and 9"
+        );
       }
 
-      snakeSize = paramsSnakeSize
+      snakeSize = paramsSnakeSize;
     } catch (error) {
-      console.warn(error)
+      console.warn(error);
     }
   }
 
@@ -68,7 +74,7 @@ export const parseEntry = (entry: string) => {
     sizeDot: 12,
     ...palettes["default"],
     dark: palettes["default"].dark && { ...palettes["default"].dark },
-    hideStack
+    hideStack,
   };
   const animationOptions: AnimationOptions = { step: 1, frameDuration: 100 };
 
@@ -118,6 +124,6 @@ export const parseEntry = (entry: string) => {
     format: format as "svg" | "gif",
     drawOptions,
     animationOptions,
-    snakeSize
+    snakeSize,
   };
 };

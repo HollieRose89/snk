@@ -19,12 +19,12 @@ export const generateContributionSnake = async (
   console.log("🎣 fetching github user contribution");
   const cells = await getGithubUserContribution(userName, options);
   const grid = userContributionToGrid(cells);
- 
+
   return Promise.all(
     outputs.map(async (out, i) => {
       if (!out) return;
-      
-      const { format, drawOptions, animationOptions,snakeSize } = out;
+
+      const { format, drawOptions, animationOptions, snakeSize } = out;
 
       const snake = createSnakeFromSize(snakeSize);
 
