@@ -1,9 +1,9 @@
 "use strict";
-exports.id = 407;
-exports.ids = [407];
+exports.id = 764;
+exports.ids = [764];
 exports.modules = {
 
-/***/ 407:
+/***/ 5764:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 // ESM COMPAT FLAG
@@ -546,14 +546,11 @@ const extractColors = (grid) => {
     return Array.from({ length: maxColor }, (_, i) => (i + 1));
 };
 
-;// CONCATENATED MODULE: ../types/__fixtures__/snake.ts
+;// CONCATENATED MODULE: ../types/__fixtures__/createSnakeFromSize.ts
 
-const create = (length) => (0,types_snake/* createSnakeFromCells */.xG)(Array.from({ length }, (_, i) => ({ x: i, y: -1 })));
-const snake1 = create(1);
-const snake3 = create(3);
-const snake4 = create(4);
-const snake5 = create(5);
-const snake9 = create(9);
+const createSnakeFromSize = (length) => {
+    return (0,types_snake/* createSnakeFromCells */.xG)(Array.from({ length }, (_, i) => ({ x: i, y: -1 })));
+};
 
 ;// CONCATENATED MODULE: ../solver/getPathToPose.ts
 
@@ -633,14 +630,14 @@ const generateContributionSnake = async (userName, outputs, options) => {
     console.log("🎣 fetching github user contribution");
     const cells = await getGithubUserContribution(userName, options);
     const grid = userContributionToGrid(cells);
-    const snake = snake4;
-    console.log("📡 computing best route");
-    const chain = getBestRoute(grid, snake);
-    chain.push(...getPathToPose(chain.slice(-1)[0], snake));
     return Promise.all(outputs.map(async (out, i) => {
         if (!out)
             return;
-        const { format, drawOptions, animationOptions } = out;
+        const { format, drawOptions, animationOptions, snakeSize } = out;
+        const snake = createSnakeFromSize(snakeSize);
+        console.log(`📡 computing best route for ${i}° snake`);
+        const chain = getBestRoute(grid, snake);
+        chain.push(...getPathToPose(chain.slice(-1)[0], snake));
         switch (format) {
             case "svg": {
                 console.log(`🖌 creating svg (outputs[${i}])`);

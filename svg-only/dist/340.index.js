@@ -260,7 +260,7 @@ const createSvg = (grid, cells, chain, drawOptions, animationOptions) => {
     const elements = [];
     elements.push(createGrid(livingCells, drawOptions, duration));
     if (!drawOptions.hideStack) {
-        createStack(livingCells, drawOptions, grid.width * drawOptions.sizeCell, (grid.height + 2) * drawOptions.sizeCell, duration);
+        elements.push(createStack(livingCells, drawOptions, grid.width * drawOptions.sizeCell, (grid.height + 2) * drawOptions.sizeCell, duration));
     }
     elements.push(createSnake(chain, drawOptions, duration));
     const viewBox = [

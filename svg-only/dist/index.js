@@ -2988,6 +2988,10 @@ palettes["default"] = palettes["github"];
 
 ;// CONCATENATED MODULE: ./outputsOptions.ts
 
+const DEFAULTS = {
+    hideStack: false,
+    snakeSize: 4,
+};
 const parseOutputsOption = (lines) => lines.map(parseEntry);
 const parseEntry = (entry) => {
     const m = entry.trim().match(/^(.+\.(svg|gif))(\?(.*)|\s*({.*}))?$/);
@@ -3008,9 +3012,29 @@ const parseEntry = (entry) => {
         if (!(err instanceof SyntaxError))
             throw err;
     }
-    let hideStack = false;
+    let hideStack = DEFAULTS.hideStack;
     if (sp.has("hide_stack")) {
         hideStack = sp.get("hide_stack") === "true";
+    }
+    let snakeSize = DEFAULTS.snakeSize;
+    if (sp.has("snake_size")) {
+        try {
+            const paramsSnakeSize = Number(sp.get("snake_size"));
+            if (Number.isNaN(paramsSnakeSize)) {
+                throw new Error("Invalid snake_size provided, snake_size must be a number");
+            }
+            if (!Number.isInteger(paramsSnakeSize)) {
+                throw new Error("Invalid snake_size provided, snake_size must be an integer");
+            }
+            if (paramsSnakeSize <= 0 || paramsSnakeSize > 9) {
+                throw new Error("Invalid snake_size provided, snake_size must be between 1 and 9");
+            }
+            snakeSize = paramsSnakeSize;
+        }
+        catch (error) {
+            console.warn(error);
+            console.warn("Using default snake size...");
+        }
     }
     const drawOptions = {
         sizeDotBorderRadius: 2,
@@ -3018,7 +3042,7 @@ const parseEntry = (entry) => {
         sizeDot: 12,
         ...palettes["default"],
         dark: palettes["default"].dark && { ...palettes["default"].dark },
-        hideStack
+        hideStack,
     };
     const animationOptions = { step: 1, frameDuration: 100 };
     {
@@ -3064,6 +3088,7 @@ const parseEntry = (entry) => {
         format: format,
         drawOptions,
         animationOptions,
+        snakeSize,
     };
 };
 
@@ -3080,7 +3105,7 @@ const parseEntry = (entry) => {
             core.getInput("svg_out_path"),
         ]);
         const githubToken = process.env.GITHUB_TOKEN ?? core.getInput("github_token");
-        const { generateContributionSnake } = await __nccwpck_require__.e(/* import() */ 407).then(__nccwpck_require__.bind(__nccwpck_require__, 407));
+        const { generateContributionSnake } = await __nccwpck_require__.e(/* import() */ 764).then(__nccwpck_require__.bind(__nccwpck_require__, 5764));
         const results = await generateContributionSnake(userName, outputs, {
             githubToken,
         });
