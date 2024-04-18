@@ -65,6 +65,7 @@ export const parseEntry = (entry: string) => {
       snakeSize = paramsSnakeSize;
     } catch (error) {
       console.warn(error);
+      console.warn("Using default snake size...")
     }
   }
 

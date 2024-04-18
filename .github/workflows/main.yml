@@ -79,6 +79,7 @@ jobs:
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
             dist/grid-without-progressbar.svg?hide_stack=true
             dist/dark-grid-without-progressbar.svg?hide_stack=true&palette=github-dark
+            dist/long-snake-contribution-grid.svg?snake_size=5
 
       - name: ensure the generated file exists
         run: |
@@ -87,6 +88,7 @@ jobs:
           test -f dist/github-contribution-grid-snake-dark.svg
           test -f dist/grid-without-progressbar.svg
           test -f dist/dark-grid-without-progressbar.svg
+          text -f dist/long-snake-contribution-grid.svg
 
       - uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
