@@ -89,13 +89,13 @@ export const createSvg = (
   elements.push(createGrid(livingCells, drawOptions, duration));
 
   if (!drawOptions.hideStack) {
-    createStack(
+    elements.push(createStack(
       livingCells,
       drawOptions,
       grid.width * drawOptions.sizeCell,
       (grid.height + 2) * drawOptions.sizeCell,
       duration
-    );
+    ))
   }
 
   elements.push(createSnake(chain, drawOptions, duration));
