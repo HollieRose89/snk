@@ -85,7 +85,7 @@ jobs:
           ls dist
           test -f dist/github-contribution-grid-snake.svg
           test -f dist/github-contribution-grid-snake-dark.svg
-          test -f dist/grid-without-progressbar.svgc
+          test -f dist/grid-without-progressbar.svg
           test -f dist/dark-grid-without-progressbar.svg
 
       - uses: crazy-max/ghaction-github-pages@v3.1.0
