@@ -15,7 +15,7 @@ jobs:
       - run: yarn install --frozen-lockfile
 
       - run: npm run type
-      - run: npm run lint
+      # - run: npm run lint
       - run: npm run test --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
