@@ -77,12 +77,16 @@ jobs:
           outputs: |
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+            dist/grid-without-progressbar.svg?hide_stack=true
+            dist/dark-grid-without-progressbar.svg?hide_stack=true&palette=github-dark
 
       - name: ensure the generated file exists
         run: |
           ls dist
           test -f dist/github-contribution-grid-snake.svg
           test -f dist/github-contribution-grid-snake-dark.svg
+          test -f dist/grid-without-progressbar.svgc
+          test -f dist/dark-grid-without-progressbar.svg
 
       - uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
