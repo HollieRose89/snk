@@ -1,7 +1,7 @@
 import { getGithubUserContribution } from "@snk/github-user-contribution";
 import { userContributionToGrid } from "./userContributionToGrid";
 import { getBestRoute } from "@snk/solver/getBestRoute";
-import { snake4 } from "@snk/types/__fixtures__/snake";
+import { createSnakeFromSize } from "@snk/types/__fixtures__/createSnakeFromSize";
 import { getPathToPose } from "@snk/solver/getPathToPose";
 import type { DrawOptions as DrawOptions } from "@snk/svg-creator";
 import type { AnimationOptions } from "@snk/gif-creator";
@@ -12,23 +12,26 @@ export const generateContributionSnake = async (
     format: "svg" | "gif";
     drawOptions: DrawOptions;
     animationOptions: AnimationOptions;
+    snakeSize: number;
   } | null)[],
   options: { githubToken: string }
 ) => {
   console.log("🎣 fetching github user contribution");
   const cells = await getGithubUserContribution(userName, options);
-
   const grid = userContributionToGrid(cells);
-  const snake = snake4;
-
-  console.log("📡 computing best route");
-  const chain = getBestRoute(grid, snake)!;
-  chain.push(...getPathToPose(chain.slice(-1)[0], snake)!);
-
+ 
   return Promise.all(
     outputs.map(async (out, i) => {
       if (!out) return;
-      const { format, drawOptions, animationOptions } = out;
+      
+      const { format, drawOptions, animationOptions,snakeSize } = out;
+
+      const snake = createSnakeFromSize(snakeSize);
+
+      console.log(`📡 computing best route for ${i}° snake`);
+      const chain = getBestRoute(grid, snake)!;
+      chain.push(...getPathToPose(chain.slice(-1)[0], snake)!);
+
       switch (format) {
         case "svg": {
           console.log(`🖌 creating svg (outputs[${i}])`);
