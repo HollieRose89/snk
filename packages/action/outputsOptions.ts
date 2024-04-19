@@ -1,5 +1,5 @@
 import type { AnimationOptions } from "@snk/gif-creator";
-import type { DrawOptions as DrawOptions } from "@snk/svg-creator";
+import type { DrawOptions } from "@snk/svg-creator";
 import { palettes } from "./palettes";
 
 const DEFAULTS = {
@@ -38,36 +38,7 @@ export const parseEntry = (entry: string) => {
     hideStack = sp.get("hide_stack") === "true";
   }
 
-  let snakeSize = DEFAULTS.snakeSize;
-
-  if (sp.has("snake_size")) {
-    try {
-      const paramsSnakeSize = Number(sp.get("snake_size"));
-
-      if (Number.isNaN(paramsSnakeSize)) {
-        throw new Error(
-          "Invalid snake_size provided, snake_size must be a number"
-        );
-      }
-
-      if (!Number.isInteger(paramsSnakeSize)) {
-        throw new Error(
-          "Invalid snake_size provided, snake_size must be an integer"
-        );
-      }
-
-      if (paramsSnakeSize <= 0 || paramsSnakeSize > 9) {
-        throw new Error(
-          "Invalid snake_size provided, snake_size must be between 1 and 9"
-        );
-      }
-
-      snakeSize = paramsSnakeSize;
-    } catch (error) {
-      console.warn(error);
-      console.warn("Using default snake size...");
-    }
-  }
+  const snakeSize = parseSnakeSize(sp);
 
   const drawOptions: DrawOptions = {
     sizeDotBorderRadius: 2,
@@ -95,15 +66,20 @@ export const parseEntry = (entry: string) => {
     }
   }
 
-  if (sp.has("color_snake")) drawOptions.colorSnake = sp.get("color_snake")!;
+  if (sp.has("color_snake")) {
+    drawOptions.colorSnake = sp.get("color_snake")!;
+  }
+
   if (sp.has("color_dots")) {
     const colors = sp.get("color_dots")!.split(/[,;]/);
     drawOptions.colorDots = colors;
     drawOptions.colorEmpty = colors[0];
     drawOptions.dark = undefined;
   }
-  if (sp.has("color_dot_border"))
+
+  if (sp.has("color_dot_border")) {
     drawOptions.colorDotBorder = sp.get("color_dot_border")!;
+  }
 
   if (sp.has("dark_color_dots")) {
     const colors = sp.get("dark_color_dots")!.split(/[,;]/);
@@ -115,10 +91,14 @@ export const parseEntry = (entry: string) => {
       colorEmpty: colors[0],
     };
   }
-  if (sp.has("dark_color_dot_border") && drawOptions.dark)
+
+  if (sp.has("dark_color_dot_border") && drawOptions.dark) {
     drawOptions.dark.colorDotBorder = sp.get("color_dot_border")!;
-  if (sp.has("dark_color_snake") && drawOptions.dark)
+  }
+
+  if (sp.has("dark_color_snake") && drawOptions.dark) {
     drawOptions.dark.colorSnake = sp.get("color_snake")!;
+  }
 
   return {
     filename,
@@ -128,3 +108,36 @@ export const parseEntry = (entry: string) => {
     snakeSize,
   };
 };
+
+function parseSnakeSize(searchParams: URLSearchParams) {
+  if (searchParams.has("snake_size")) {
+    try {
+      const paramsSnakeSize = Number(searchParams.get("snake_size"));
+
+      if (Number.isNaN(paramsSnakeSize)) {
+        throw new Error(
+          "Invalid snake_size provided, snake_size must be a number"
+        );
+      }
+
+      if (!Number.isInteger(paramsSnakeSize)) {
+        throw new Error(
+          "Invalid snake_size provided, snake_size must be an integer"
+        );
+      }
+
+      if (paramsSnakeSize <= 0 || paramsSnakeSize > 9) {
+        throw new Error(
+          "Invalid snake_size provided, snake_size must be between 1 and 9"
+        );
+      }
+
+      return paramsSnakeSize;
+    } catch (error) {
+      console.warn(error);
+      console.warn("Using default snake size...");
+    }
+  }
+
+  return DEFAULTS.snakeSize;
+}
