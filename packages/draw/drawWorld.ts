@@ -12,6 +12,7 @@ export type Options = {
   sizeCell: number;
   sizeDot: number;
   sizeDotBorderRadius: number;
+  hideStack?: boolean;
 };
 
 export const drawStack = (
@@ -89,9 +90,12 @@ export const drawLerpWorld = (
   ctx.restore();
 };
 
-export const getCanvasWorldSize = (grid: Grid, o: { sizeCell: number }) => {
+export const getCanvasWorldSize = (
+  grid: Grid,
+  o: { sizeCell: number; hideStack?: boolean }
+) => {
   const width = o.sizeCell * (grid.width + 2);
-  const height = o.sizeCell * (grid.height + 4) + 30;
+  const height = o.sizeCell * (grid.height + 4) + (o.hideStack ? 0 : 30);
 
   return { width, height };
 };
