@@ -2992,6 +2992,11 @@ const DEFAULTS = {
     hideStack: false,
     snakeSize: 4,
 };
+const SPEEDS = {
+    slow: 200,
+    normal: 150,
+    fast: 100,
+};
 const parseOutputsOption = (lines) => lines.map(parseEntry);
 const parseEntry = (entry) => {
     const m = entry.trim().match(/^(.+\.(svg|gif))(\?(.*)|\s*({.*}))?$/);
@@ -2999,27 +3004,68 @@ const parseEntry = (entry) => {
         return null;
     const [, filename, format, _, q1, q2] = m;
     const query = q1 ?? q2;
-    let sp = new URLSearchParams(query || "");
+    const searchParams = parseQuery(query);
+    const hideStack = parseHideStack(searchParams);
+    const snakeSize = parseSnakeSize(searchParams);
+    const colors = parseColors(searchParams);
+    const drawOptions = {
+        sizeDotBorderRadius: 2,
+        sizeCell: 16,
+        sizeDot: 12,
+        hideStack,
+        ...colors,
+    };
+    const animationOptions = {
+        step: 1,
+        frameDuration: parseSpeed(searchParams),
+    };
+    return {
+        filename,
+        format: format,
+        drawOptions,
+        animationOptions,
+        snakeSize,
+    };
+};
+function parseSpeed(searchParams) {
+    if (searchParams.has("speed")) {
+        const speed = searchParams.get("speed");
+        if (speed in SPEEDS) {
+            return SPEEDS[speed];
+        }
+        console.warn(`Speed '${speed}' is not a valid speed.`);
+        console.warn("Using default speed...");
+    }
+    return SPEEDS.normal;
+}
+function parseQuery(query) {
+    let searchParams = new URLSearchParams(query || "");
     try {
         const o = JSON.parse(query);
-        if (Array.isArray(o.color_dots))
+        if (Array.isArray(o.color_dots)) {
             o.color_dots = o.color_dots.join(",");
-        if (Array.isArray(o.dark_color_dots))
+        }
+        if (Array.isArray(o.dark_color_dots)) {
             o.dark_color_dots = o.dark_color_dots.join(",");
-        sp = new URLSearchParams(o);
+        }
+        searchParams = new URLSearchParams(o);
     }
     catch (err) {
         if (!(err instanceof SyntaxError))
             throw err;
     }
-    let hideStack = DEFAULTS.hideStack;
-    if (sp.has("hide_stack")) {
-        hideStack = sp.get("hide_stack") === "true";
+    return searchParams;
+}
+function parseHideStack(searchParams) {
+    if (searchParams.has("hide_stack")) {
+        return searchParams.get("hide_stack") === "true";
     }
-    let snakeSize = DEFAULTS.snakeSize;
-    if (sp.has("snake_size")) {
+    return DEFAULTS.hideStack;
+}
+function parseSnakeSize(searchParams) {
+    if (searchParams.has("snake_size")) {
         try {
-            const paramsSnakeSize = Number(sp.get("snake_size"));
+            const paramsSnakeSize = Number(searchParams.get("snake_size"));
             if (Number.isNaN(paramsSnakeSize)) {
                 throw new Error("Invalid snake_size provided, snake_size must be a number");
             }
@@ -3029,68 +3075,64 @@ const parseEntry = (entry) => {
             if (paramsSnakeSize <= 0 || paramsSnakeSize > 9) {
                 throw new Error("Invalid snake_size provided, snake_size must be between 1 and 9");
             }
-            snakeSize = paramsSnakeSize;
+            return paramsSnakeSize;
         }
         catch (error) {
             console.warn(error);
             console.warn("Using default snake size...");
         }
     }
-    const drawOptions = {
-        sizeDotBorderRadius: 2,
-        sizeCell: 16,
-        sizeDot: 12,
+    return DEFAULTS.snakeSize;
+}
+function parseColors(searchParams) {
+    const drawColors = {
         ...palettes["default"],
         dark: palettes["default"].dark && { ...palettes["default"].dark },
-        hideStack,
     };
-    const animationOptions = { step: 1, frameDuration: 100 };
     {
-        const palette = palettes[sp.get("palette")];
+        const palette = palettes[searchParams.get("palette")];
         if (palette) {
-            Object.assign(drawOptions, palette);
-            drawOptions.dark = palette.dark && { ...palette.dark };
+            Object.assign(drawColors, palette);
+            drawColors.dark = palette.dark && { ...palette.dark };
         }
     }
     {
-        const dark_palette = palettes[sp.get("dark_palette")];
+        const dark_palette = palettes[searchParams.get("dark_palette")];
         if (dark_palette) {
             const clone = { ...dark_palette, dark: undefined };
-            drawOptions.dark = clone;
+            drawColors.dark = clone;
         }
     }
-    if (sp.has("color_snake"))
-        drawOptions.colorSnake = sp.get("color_snake");
-    if (sp.has("color_dots")) {
-        const colors = sp.get("color_dots").split(/[,;]/);
-        drawOptions.colorDots = colors;
-        drawOptions.colorEmpty = colors[0];
-        drawOptions.dark = undefined;
+    if (searchParams.has("color_snake")) {
+        drawColors.colorSnake = searchParams.get("color_snake");
     }
-    if (sp.has("color_dot_border"))
-        drawOptions.colorDotBorder = sp.get("color_dot_border");
-    if (sp.has("dark_color_dots")) {
-        const colors = sp.get("dark_color_dots").split(/[,;]/);
-        drawOptions.dark = {
-            colorDotBorder: drawOptions.colorDotBorder,
-            colorSnake: drawOptions.colorSnake,
-            ...drawOptions.dark,
+    if (searchParams.has("color_dots")) {
+        const colors = searchParams.get("color_dots").split(/[,;]/);
+        drawColors.colorDots = colors;
+        drawColors.colorEmpty = colors[0];
+        drawColors.dark = undefined;
+    }
+    if (searchParams.has("color_dot_border")) {
+        drawColors.colorDotBorder = searchParams.get("color_dot_border");
+    }
+    if (searchParams.has("dark_color_dots")) {
+        const colors = searchParams.get("dark_color_dots").split(/[,;]/);
+        drawColors.dark = {
+            colorDotBorder: drawColors.colorDotBorder,
+            colorSnake: drawColors.colorSnake,
+            ...drawColors.dark,
             colorDots: colors,
             colorEmpty: colors[0],
         };
     }
-    if (sp.has("dark_color_dot_border") && drawOptions.dark)
-        drawOptions.dark.colorDotBorder = sp.get("color_dot_border");
-    if (sp.has("dark_color_snake") && drawOptions.dark)
-        drawOptions.dark.colorSnake = sp.get("color_snake");
-    return {
-        filename,
-        format: format,
-        drawOptions,
-        animationOptions,
-        snakeSize,
-    };
-};
+    if (searchParams.has("dark_color_dot_border") && drawColors.dark) {
+        drawColors.dark.colorDotBorder = searchParams.get("color_dot_border");
+    }
+    if (searchParams.has("dark_color_snake") && drawColors.dark) {
+        drawColors.dark.colorSnake = searchParams.get("color_snake");
+    }
+    return drawColors;
+}
 
 ;// CONCATENATED MODULE: ./index.ts
 

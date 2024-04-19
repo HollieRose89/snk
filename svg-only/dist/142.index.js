@@ -133,13 +133,15 @@ const drawLerpWorld = (ctx, grid, cells, snake0, snake1, stack, k, o) => {
     drawGrid_drawGrid(ctx, grid, cells, o);
     drawSnakeLerp(ctx, snake0, snake1, k, o);
     ctx.translate(0, (grid.height + 2) * o.sizeCell);
-    const max = grid.data.reduce((sum, x) => sum + +!!x, stack.length);
-    drawStack(ctx, stack, max, grid.width * o.sizeCell, o);
+    if (!o.hideStack) {
+        const max = grid.data.reduce((sum, x) => sum + +!!x, stack.length);
+        drawStack(ctx, stack, max, grid.width * o.sizeCell, o);
+    }
     ctx.restore();
 };
 const getCanvasWorldSize = (grid, o) => {
     const width = o.sizeCell * (grid.width + 2);
-    const height = o.sizeCell * (grid.height + 4) + 30;
+    const height = o.sizeCell * (grid.height + 4) + (o.hideStack ? 0 : 30);
     return { width, height };
 };
 
