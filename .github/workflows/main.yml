@@ -77,20 +77,24 @@ jobs:
         with:
           github_user_name: platane
           outputs: |
-            dist/github-contribution-grid-snake.svg
-            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+            dist/grid-snake.svg
+            dist/grid-snake-dark.svg?palette=github-dark
             dist/grid-without-progressbar.svg?hide_stack=true
-            dist/dark-grid-without-progressbar.svg?hide_stack=true&palette=github-dark
-            dist/long-snake-contribution-grid.svg?snake_size=5
+            dist/grid-snake-long.svg?snake_size=5
+            dist/grid-snake-slow.svg?speed=slow
+            dist/grid-snake-normal.svg?speed=normal
+            dist/grid-snake-fast.svg?speed=fast
 
       - name: ensure the generated file exists
         run: |
           ls dist
-          test -f dist/github-contribution-grid-snake.svg
-          test -f dist/github-contribution-grid-snake-dark.svg
+          test -f dist/grid-snake.svg
+          test -f dist/grid-snake-dark.svg
           test -f dist/grid-without-progressbar.svg
-          test -f dist/dark-grid-without-progressbar.svg
-          test -f dist/long-snake-contribution-grid.svg
+          test -f dist/grid-snake-long.svg
+          test -f dist/grid-snake-slow.svg
+          test -f dist/grid-snake-normal.svg
+          test -f dist/grid-snake-fast.svg
 
       - uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
