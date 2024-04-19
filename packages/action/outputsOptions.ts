@@ -7,6 +7,12 @@ const DEFAULTS = {
   snakeSize: 4,
 };
 
+const SPEEDS = {
+  slow: 200,
+  normal: 150,
+  fast: 100,
+};
+
 export const parseOutputsOption = (lines: string[]) => lines.map(parseEntry);
 
 export const parseEntry = (entry: string) => {
@@ -30,7 +36,11 @@ export const parseEntry = (entry: string) => {
     hideStack,
     ...colors,
   };
-  const animationOptions: AnimationOptions = { step: 1, frameDuration: 100 };
+
+  const animationOptions: AnimationOptions = {
+    step: 1,
+    frameDuration: parseSpeed(searchParams),
+  };
 
   return {
     filename,
@@ -40,6 +50,21 @@ export const parseEntry = (entry: string) => {
     snakeSize,
   };
 };
+
+function parseSpeed(searchParams: URLSearchParams) {
+  if (searchParams.has("speed")) {
+    const speed = searchParams.get("speed")!;
+
+    if (speed in SPEEDS) {
+      return SPEEDS[speed as keyof typeof SPEEDS];
+    }
+
+    console.warn(`Speed '${speed}' is not a valid speed.`);
+    console.warn("Using default speed...");
+  }
+
+  return SPEEDS.normal;
+}
 
 function parseQuery(query: string) {
   let searchParams = new URLSearchParams(query || "");
