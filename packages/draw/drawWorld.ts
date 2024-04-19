@@ -84,8 +84,10 @@ export const drawLerpWorld = (
 
   ctx.translate(0, (grid.height + 2) * o.sizeCell);
 
-  const max = grid.data.reduce((sum, x) => sum + +!!x, stack.length);
-  drawStack(ctx, stack, max, grid.width * o.sizeCell, o);
+  if (!o.hideStack) {
+    const max = grid.data.reduce((sum, x) => sum + +!!x, stack.length);
+    drawStack(ctx, stack, max, grid.width * o.sizeCell, o);
+  }
 
   ctx.restore();
 };
