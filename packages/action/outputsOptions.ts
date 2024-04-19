@@ -18,87 +18,19 @@ export const parseEntry = (entry: string) => {
 
   const query = q1 ?? q2;
 
-  let sp = new URLSearchParams(query || "");
-
-  try {
-    const o = JSON.parse(query);
-
-    if (Array.isArray(o.color_dots)) o.color_dots = o.color_dots.join(",");
-    if (Array.isArray(o.dark_color_dots))
-      o.dark_color_dots = o.dark_color_dots.join(",");
-
-    sp = new URLSearchParams(o);
-  } catch (err) {
-    if (!(err instanceof SyntaxError)) throw err;
-  }
-
-  let hideStack = DEFAULTS.hideStack;
-
-  if (sp.has("hide_stack")) {
-    hideStack = sp.get("hide_stack") === "true";
-  }
-
-  const snakeSize = parseSnakeSize(sp);
+  const searchParams = parseQuery(query);
+  const hideStack = parseHideStack(searchParams);
+  const snakeSize = parseSnakeSize(searchParams);
+  const colors = parseColors(searchParams);
 
   const drawOptions: DrawOptions = {
     sizeDotBorderRadius: 2,
     sizeCell: 16,
     sizeDot: 12,
-    ...palettes["default"],
-    dark: palettes["default"].dark && { ...palettes["default"].dark },
     hideStack,
+    ...colors,
   };
   const animationOptions: AnimationOptions = { step: 1, frameDuration: 100 };
-
-  {
-    const palette = palettes[sp.get("palette")!];
-    if (palette) {
-      Object.assign(drawOptions, palette);
-      drawOptions.dark = palette.dark && { ...palette.dark };
-    }
-  }
-
-  {
-    const dark_palette = palettes[sp.get("dark_palette")!];
-    if (dark_palette) {
-      const clone = { ...dark_palette, dark: undefined };
-      drawOptions.dark = clone;
-    }
-  }
-
-  if (sp.has("color_snake")) {
-    drawOptions.colorSnake = sp.get("color_snake")!;
-  }
-
-  if (sp.has("color_dots")) {
-    const colors = sp.get("color_dots")!.split(/[,;]/);
-    drawOptions.colorDots = colors;
-    drawOptions.colorEmpty = colors[0];
-    drawOptions.dark = undefined;
-  }
-
-  if (sp.has("color_dot_border")) {
-    drawOptions.colorDotBorder = sp.get("color_dot_border")!;
-  }
-
-  if (sp.has("dark_color_dots")) {
-    const colors = sp.get("dark_color_dots")!.split(/[,;]/);
-    drawOptions.dark = {
-      colorDotBorder: drawOptions.colorDotBorder,
-      colorSnake: drawOptions.colorSnake,
-      ...drawOptions.dark,
-      colorDots: colors,
-      colorEmpty: colors[0],
-    };
-  }
-
-  if (sp.has("dark_color_dot_border") && drawOptions.dark) {
-    drawOptions.dark.colorDotBorder = sp.get("color_dot_border")!;
-  }
-
-  if (sp.has("dark_color_snake") && drawOptions.dark) {
-    drawOptions.dark.colorSnake = sp.get("color_snake")!;
-  }
 
   return {
     filename,
@@ -108,6 +40,36 @@ export const parseEntry = (entry: string) => {
     snakeSize,
   };
 };
+
+function parseQuery(query: string) {
+  let searchParams = new URLSearchParams(query || "");
+
+  try {
+    const o = JSON.parse(query);
+
+    if (Array.isArray(o.color_dots)) {
+      o.color_dots = o.color_dots.join(",");
+    }
+
+    if (Array.isArray(o.dark_color_dots)) {
+      o.dark_color_dots = o.dark_color_dots.join(",");
+    }
+
+    searchParams = new URLSearchParams(o);
+  } catch (err) {
+    if (!(err instanceof SyntaxError)) throw err;
+  }
+
+  return searchParams;
+}
+
+function parseHideStack(searchParams: URLSearchParams) {
+  if (searchParams.has("hide_stack")) {
+    return searchParams.get("hide_stack") === "true";
+  }
+
+  return DEFAULTS.hideStack;
+}
 
 function parseSnakeSize(searchParams: URLSearchParams) {
   if (searchParams.has("snake_size")) {
@@ -140,4 +102,66 @@ function parseSnakeSize(searchParams: URLSearchParams) {
   }
 
   return DEFAULTS.snakeSize;
+}
+
+function parseColors(searchParams: URLSearchParams) {
+  const drawColors: Pick<
+    DrawOptions,
+    "colorDotBorder" | "colorDots" | "colorEmpty" | "colorSnake" | "dark"
+  > = {
+    ...palettes["default"],
+    dark: palettes["default"].dark && { ...palettes["default"].dark },
+  };
+
+  {
+    const palette = palettes[searchParams.get("palette")!];
+    if (palette) {
+      Object.assign(drawColors, palette);
+      drawColors.dark = palette.dark && { ...palette.dark };
+    }
+  }
+
+  {
+    const dark_palette = palettes[searchParams.get("dark_palette")!];
+    if (dark_palette) {
+      const clone = { ...dark_palette, dark: undefined };
+      drawColors.dark = clone;
+    }
+  }
+
+  if (searchParams.has("color_snake")) {
+    drawColors.colorSnake = searchParams.get("color_snake")!;
+  }
+
+  if (searchParams.has("color_dots")) {
+    const colors = searchParams.get("color_dots")!.split(/[,;]/);
+    drawColors.colorDots = colors;
+    drawColors.colorEmpty = colors[0];
+    drawColors.dark = undefined;
+  }
+
+  if (searchParams.has("color_dot_border")) {
+    drawColors.colorDotBorder = searchParams.get("color_dot_border")!;
+  }
+
+  if (searchParams.has("dark_color_dots")) {
+    const colors = searchParams.get("dark_color_dots")!.split(/[,;]/);
+    drawColors.dark = {
+      colorDotBorder: drawColors.colorDotBorder,
+      colorSnake: drawColors.colorSnake,
+      ...drawColors.dark,
+      colorDots: colors,
+      colorEmpty: colors[0],
+    };
+  }
+
+  if (searchParams.has("dark_color_dot_border") && drawColors.dark) {
+    drawColors.dark.colorDotBorder = searchParams.get("color_dot_border")!;
+  }
+
+  if (searchParams.has("dark_color_snake") && drawColors.dark) {
+    drawColors.dark.colorSnake = searchParams.get("color_snake")!;
+  }
+
+  return drawColors;
 }
