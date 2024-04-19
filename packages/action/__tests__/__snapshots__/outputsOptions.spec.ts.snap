@@ -3,7 +3,7 @@
 exports[`should parse /out.svg?{"color_snake":"yellow","color_dots":["#000","#111","#222","#333","#444"]} 1`] = `
 {
   "animationOptions": {
-    "frameDuration": 100,
+    "frameDuration": 150,
     "step": 1,
   },
   "drawOptions": {
@@ -32,7 +32,7 @@ exports[`should parse /out.svg?{"color_snake":"yellow","color_dots":["#000","#11
 exports[`should parse /out.svg?color_snake=orange&color_dots=#000,#111,#222,#333,#444 1`] = `
 {
   "animationOptions": {
-    "frameDuration": 100,
+    "frameDuration": 150,
     "step": 1,
   },
   "drawOptions": {
@@ -61,7 +61,7 @@ exports[`should parse /out.svg?color_snake=orange&color_dots=#000,#111,#222,#333
 exports[`should parse /out.svg?color_snake=orange&color_dots=#000,#111,#222,#333,#444&dark_color_dots=#a00,#a11,#a22,#a33,#a44 1`] = `
 {
   "animationOptions": {
-    "frameDuration": 100,
+    "frameDuration": 150,
     "step": 1,
   },
   "drawOptions": {
@@ -101,7 +101,7 @@ exports[`should parse /out.svg?color_snake=orange&color_dots=#000,#111,#222,#333
 exports[`should parse path/to/out.gif 1`] = `
 {
   "animationOptions": {
-    "frameDuration": 100,
+    "frameDuration": 150,
     "step": 1,
   },
   "drawOptions": {
