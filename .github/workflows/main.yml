@@ -75,15 +75,12 @@ jobs:
         id: generate-snake
         uses: ./svg-only
         with:
-          github_user_name: platane
+          github_user_name: arthurlobopro
           outputs: |
             dist/grid-snake.svg
             dist/grid-snake-dark.svg?palette=github-dark
             dist/grid-without-progressbar.svg?hide_stack=true
             dist/grid-snake-long.svg?snake_size=5
-            dist/grid-snake-slow.svg?speed=slow
-            dist/grid-snake-normal.svg?speed=normal
-            dist/grid-snake-fast.svg?speed=fast
 
       - name: ensure the generated file exists
         run: |
@@ -92,9 +89,38 @@ jobs:
           test -f dist/grid-snake-dark.svg
           test -f dist/grid-without-progressbar.svg
           test -f dist/grid-snake-long.svg
-          test -f dist/grid-snake-slow.svg
-          test -f dist/grid-snake-normal.svg
-          test -f dist/grid-snake-fast.svg
+
+      - name: Generate Speed Custom
+        uses: ./svg-only
+        with:
+          github_user_name: arthurlobopro
+          outputs: |
+            dist/speed/grid-snake-slow.svg?speed=slow
+            dist/speed/grid-snake-normal.svg?speed=normal
+            dist/speed/grid-snake-fast.svg?speed=fast
+
+      - name: Ensure Speed Outputs Exists
+        run: |
+          ls dist/speed
+          test -f dist/speed/grid-snake-slow.svg
+          test -f dist/speed/grid-snake-normal.svg
+          test -f dist/speed/grid-snake-fast.svg
+      
+      - name: Generate Dot Shape Custom
+        uses: ./svg-only
+        with:
+          github_user_name: arthurlobopro
+          outputs: |
+            dist/shape/grid-snake-square.svg?dot_shape=square
+            dist/shape/grid-snake-rounded-square.svg?dot_shape=rounded-square
+            dist/shape/grid-snake-circle.svg?dot_shape=circle
+      
+      - name: Ensure Speed Outputs Exists
+        run: |
+          ls dist/shape
+          test -f dist/shape/grid-snake-square.svg
+          test -f dist/shape/grid-snake-rounded-square.svg
+          test -f dist/shape/grid-snake-circle.svg
 
       - uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
