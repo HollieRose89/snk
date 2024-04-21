@@ -98,6 +98,9 @@ jobs:
             dist/speed/grid-snake-slow.svg?speed=slow
             dist/speed/grid-snake-normal.svg?speed=normal
             dist/speed/grid-snake-fast.svg?speed=fast
+            dist/speed/grid-snake-slow-dark.svg?speed=slow&palette=github-dark
+            dist/speed/grid-snake-normal-dark.svg?speed=normal&palette=github-dark
+            dist/speed/grid-snake-fast-dark.svg?speed=fast&palette=github-dark
 
       - name: Ensure Speed Outputs Exists
         run: |
@@ -105,6 +108,9 @@ jobs:
           test -f dist/speed/grid-snake-slow.svg
           test -f dist/speed/grid-snake-normal.svg
           test -f dist/speed/grid-snake-fast.svg
+          test -f dist/speed/grid-snake-slow-dark.svg
+          test -f dist/speed/grid-snake-normal-dark.svg
+          test -f dist/speed/grid-snake-fast-dark.svg
 
       - name: Generate Dot Shape Custom
         uses: ./svg-only
