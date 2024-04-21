@@ -5,6 +5,7 @@ import {
   parseQuery,
   parseSnakeSize,
   parseSpeed,
+  parseDotShape,
   parseHideStack,
 } from "./parsers";
 
@@ -23,13 +24,13 @@ export const parseEntry = (entry: string) => {
   const hideStack = parseHideStack(searchParams);
   const snakeSize = parseSnakeSize(searchParams);
   const colors = parseColors(searchParams);
+  const shape = parseDotShape(searchParams);
 
   const drawOptions: DrawOptions = {
-    sizeDotBorderRadius: 2,
     sizeCell: 16,
-    sizeDot: 12,
     hideStack,
     ...colors,
+    ...shape,
   };
 
   const animationOptions: AnimationOptions = {
