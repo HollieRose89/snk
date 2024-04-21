@@ -105,7 +105,7 @@ jobs:
           test -f dist/speed/grid-snake-slow.svg
           test -f dist/speed/grid-snake-normal.svg
           test -f dist/speed/grid-snake-fast.svg
-      
+
       - name: Generate Dot Shape Custom
         uses: ./svg-only
         with:
@@ -114,7 +114,7 @@ jobs:
             dist/shape/grid-snake-square.svg?dot_shape=square
             dist/shape/grid-snake-rounded-square.svg?dot_shape=rounded-square
             dist/shape/grid-snake-circle.svg?dot_shape=circle
-      
+
       - name: Ensure Speed Outputs Exists
         run: |
           ls dist/shape

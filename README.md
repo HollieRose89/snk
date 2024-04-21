@@ -50,7 +50,15 @@ Available as github action. It can automatically generate a new image each day. 
     #  - color_dots:  Coma separated list of dots color.
     #                 The first one is 0 contribution, then it goes from the low contribution to the highest.
     #                 Exactly 5 colors are expected.
-    #  - hide_stack: On svg builds, you can hide the progressbar by this option
+    #  - hide_stack: If should hide progressbar, by default is false
+    #  - dot_shape: The shape of the contribution dots,
+    #               must be one of [square, square-rounded, circle].
+    #               By default is square-rounded.
+    #  - speed: The speed of animation, must be one of [fast, normal, slow].
+    #           By default is normal
+    #  - snake_size: The size of the snake, must be a number between 1 and 9.
+    #                By default is 4.
+
     outputs: |
       dist/github-snake.svg
       dist/github-snake-dark.svg?palette=github-dark
