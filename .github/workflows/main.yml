@@ -99,8 +99,8 @@ jobs:
             dist/size/grid-snake-short-dark.svg?snake_size=2&palette=github-dark
             dist/size/grid-snake-long.svg?snake_size=6
             dist/size/grid-snake-long-dark.svg?snake_size=6&palette=github-dark
-            dist/size/grid-snake-very-long.svg?snake_size=9
-            dist/size/grid-snake-very-long-dark.svg?snake_size=9&palette=github-dark
+            dist/size/grid-snake-very-long.svg?snake_size=8
+            dist/size/grid-snake-very-long-dark.svg?snake_size=8&palette=github-dark
 
       - name: Ensure Size Outputs Exists
         run: |
