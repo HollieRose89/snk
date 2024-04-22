@@ -90,6 +90,28 @@ jobs:
           test -f dist/grid-without-progressbar.svg
           test -f dist/grid-snake-long.svg
 
+      - name: Generate Snake Sizes
+        uses: ./svg-only
+        with:
+          github_user_name: arthurlobopro
+          outputs: |
+            dist/size/grid-snake-short.svg?snake_size=2
+            dist/size/grid-snake-short-dark.svg?snake_size=2&palette=github-dark
+            dist/size/grid-snake-long.svg?snake_size=6
+            dist/size/grid-snake-long-dark.svg?snake_size=6&palette=github-dark
+            dist/size/grid-snake-very-long.svg?snake_size=9
+            dist/size/grid-snake-very-long-dark.svg?snake_size=9&palette=github-dark
+
+      - name: Ensure Size Outputs Exists
+        run: |
+          ls dist/size
+          test -f dist/size/grid-snake-short.svg
+          test -f dist/size/grid-snake-short-dark.svg
+          test -f dist/size/grid-snake-long.svg
+          test -f dist/size/grid-snake-long-dark.svg
+          test -f dist/size/grid-snake-very-long.svg
+          test -f dist/size/grid-snake-very-long-dark.svg
+
       - name: Generate Speed Custom
         uses: ./svg-only
         with:
