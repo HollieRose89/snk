@@ -79,12 +79,14 @@ jobs:
           outputs: |
             dist/grid-snake.svg
             dist/grid-snake-dark.svg?palette=github-dark
+            dist/grid-snake-colored.svg?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
 
       - name: ensure the generated file exists
         run: |
           ls dist
           test -f dist/grid-snake.svg
           test -f dist/grid-snake-dark.svg
+          test -f dist/grid-snake-colored.svg
 
       - name: Generate Without Progressbar
         uses: ./svg-only
