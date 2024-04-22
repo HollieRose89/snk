@@ -79,16 +79,46 @@ jobs:
           outputs: |
             dist/grid-snake.svg
             dist/grid-snake-dark.svg?palette=github-dark
-            dist/grid-without-progressbar.svg?hide_stack=true
-            dist/grid-snake-long.svg?snake_size=5
+            dist/grid-snake-colored.svg?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
 
       - name: ensure the generated file exists
         run: |
           ls dist
           test -f dist/grid-snake.svg
           test -f dist/grid-snake-dark.svg
-          test -f dist/grid-without-progressbar.svg
-          test -f dist/grid-snake-long.svg
+          test -f dist/grid-snake-colored.svg
+
+      - name: Generate Without Progressbar
+        uses: ./svg-only
+        with:
+          github_user_name: arthurlobopro
+          outputs: |
+            dist/stack/grid-without-progressbar.svg?hide_stack=true
+            dist/stack/grid-without-progressbar-dark.svg?hide_stack=true&palette=github-dark
+
+      - name: ensure the generated file exists
+        run: |
+          ls dist/stack
+          test -f dist/stack/grid-without-progressbar.svg
+          test -f dist/stack/grid-without-progressbar-dark.svg
+
+      - name: Generate Snake Sizes
+        uses: ./svg-only
+        with:
+          github_user_name: arthurlobopro
+          outputs: |
+            dist/size/grid-snake-short.svg?snake_size=2
+            dist/size/grid-snake-short-dark.svg?snake_size=2&palette=github-dark
+            dist/size/grid-snake-long.svg?snake_size=6
+            dist/size/grid-snake-long-dark.svg?snake_size=6&palette=github-dark
+
+      - name: Ensure Size Outputs Exists
+        run: |
+          ls dist/size
+          test -f dist/size/grid-snake-short.svg
+          test -f dist/size/grid-snake-short-dark.svg
+          test -f dist/size/grid-snake-long.svg
+          test -f dist/size/grid-snake-long-dark.svg
 
       - name: Generate Speed Custom
         uses: ./svg-only
@@ -98,6 +128,9 @@ jobs:
             dist/speed/grid-snake-slow.svg?speed=slow
             dist/speed/grid-snake-normal.svg?speed=normal
             dist/speed/grid-snake-fast.svg?speed=fast
+            dist/speed/grid-snake-slow-dark.svg?speed=slow&palette=github-dark
+            dist/speed/grid-snake-normal-dark.svg?speed=normal&palette=github-dark
+            dist/speed/grid-snake-fast-dark.svg?speed=fast&palette=github-dark
 
       - name: Ensure Speed Outputs Exists
         run: |
@@ -105,7 +138,10 @@ jobs:
           test -f dist/speed/grid-snake-slow.svg
           test -f dist/speed/grid-snake-normal.svg
           test -f dist/speed/grid-snake-fast.svg
-      
+          test -f dist/speed/grid-snake-slow-dark.svg
+          test -f dist/speed/grid-snake-normal-dark.svg
+          test -f dist/speed/grid-snake-fast-dark.svg
+
       - name: Generate Dot Shape Custom
         uses: ./svg-only
         with:
@@ -114,13 +150,19 @@ jobs:
             dist/shape/grid-snake-square.svg?dot_shape=square
             dist/shape/grid-snake-rounded-square.svg?dot_shape=rounded-square
             dist/shape/grid-snake-circle.svg?dot_shape=circle
-      
+            dist/shape/grid-snake-square-dark.svg?dot_shape=square&palette=github-dark
+            dist/shape/grid-snake-rounded-square-dark.svg?dot_shape=rounded-square&palette=github-dark
+            dist/shape/grid-snake-circle-dark.svg?dot_shape=circle&palette=github-dark
+
       - name: Ensure Speed Outputs Exists
         run: |
           ls dist/shape
           test -f dist/shape/grid-snake-square.svg
           test -f dist/shape/grid-snake-rounded-square.svg
           test -f dist/shape/grid-snake-circle.svg
+          test -f dist/shape/grid-snake-square-dark.svg
+          test -f dist/shape/grid-snake-rounded-square-dark.svg
+          test -f dist/shape/grid-snake-circle-dark.svg
 
       - uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
