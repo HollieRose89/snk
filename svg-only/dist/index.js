@@ -2966,6 +2966,53 @@ var external_fs_ = __nccwpck_require__(7147);
 var external_path_ = __nccwpck_require__(1017);
 // EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(7117);
+;// CONCATENATED MODULE: ./parsers/parseSnakeSize.ts
+const DEFAULT_SNAKE_SIZE = 4;
+const MIN_SIZE = 1;
+const MAX_SIZE = 6;
+function parseSnakeSize(searchParams) {
+    if (searchParams.has("snake_size")) {
+        try {
+            const paramsSnakeSize = Number(searchParams.get("snake_size"));
+            if (Number.isNaN(paramsSnakeSize)) {
+                throw new Error("Invalid snake_size provided, snake_size must be a number");
+            }
+            if (!Number.isInteger(paramsSnakeSize)) {
+                throw new Error("Invalid snake_size provided, snake_size must be an integer");
+            }
+            if (paramsSnakeSize < MIN_SIZE || paramsSnakeSize > MAX_SIZE) {
+                throw new Error(`Invalid snake_size provided, snake_size must be between ${MIN_SIZE} and ${MAX_SIZE}`);
+            }
+            return paramsSnakeSize;
+        }
+        catch (error) {
+            console.warn(error);
+            console.warn("Using default snake size...");
+        }
+    }
+    return DEFAULT_SNAKE_SIZE;
+}
+
+;// CONCATENATED MODULE: ./parsers/parseQuery.ts
+function parseQuery(query) {
+    let searchParams = new URLSearchParams(query || "");
+    try {
+        const o = JSON.parse(query);
+        if (Array.isArray(o.color_dots)) {
+            o.color_dots = o.color_dots.join(",");
+        }
+        if (Array.isArray(o.dark_color_dots)) {
+            o.dark_color_dots = o.dark_color_dots.join(",");
+        }
+        searchParams = new URLSearchParams(o);
+    }
+    catch (err) {
+        if (!(err instanceof SyntaxError))
+            throw err;
+    }
+    return searchParams;
+}
+
 ;// CONCATENATED MODULE: ./palettes.ts
 const basePalettes = {
     "github-light": {
@@ -2986,104 +3033,8 @@ const palettes = { ...basePalettes };
 palettes["github"] = palettes["github-light"];
 palettes["default"] = palettes["github"];
 
-;// CONCATENATED MODULE: ./outputsOptions.ts
+;// CONCATENATED MODULE: ./parsers/parseColors.ts
 
-const DEFAULTS = {
-    hideStack: false,
-    snakeSize: 4,
-};
-const SPEEDS = {
-    slow: 200,
-    normal: 150,
-    fast: 100,
-};
-const parseOutputsOption = (lines) => lines.map(parseEntry);
-const parseEntry = (entry) => {
-    const m = entry.trim().match(/^(.+\.(svg|gif))(\?(.*)|\s*({.*}))?$/);
-    if (!m)
-        return null;
-    const [, filename, format, _, q1, q2] = m;
-    const query = q1 ?? q2;
-    const searchParams = parseQuery(query);
-    const hideStack = parseHideStack(searchParams);
-    const snakeSize = parseSnakeSize(searchParams);
-    const colors = parseColors(searchParams);
-    const drawOptions = {
-        sizeDotBorderRadius: 2,
-        sizeCell: 16,
-        sizeDot: 12,
-        hideStack,
-        ...colors,
-    };
-    const animationOptions = {
-        step: 1,
-        frameDuration: parseSpeed(searchParams),
-    };
-    return {
-        filename,
-        format: format,
-        drawOptions,
-        animationOptions,
-        snakeSize,
-    };
-};
-function parseSpeed(searchParams) {
-    if (searchParams.has("speed")) {
-        const speed = searchParams.get("speed");
-        if (speed in SPEEDS) {
-            return SPEEDS[speed];
-        }
-        console.warn(`Speed '${speed}' is not a valid speed.`);
-        console.warn("Using default speed...");
-    }
-    return SPEEDS.normal;
-}
-function parseQuery(query) {
-    let searchParams = new URLSearchParams(query || "");
-    try {
-        const o = JSON.parse(query);
-        if (Array.isArray(o.color_dots)) {
-            o.color_dots = o.color_dots.join(",");
-        }
-        if (Array.isArray(o.dark_color_dots)) {
-            o.dark_color_dots = o.dark_color_dots.join(",");
-        }
-        searchParams = new URLSearchParams(o);
-    }
-    catch (err) {
-        if (!(err instanceof SyntaxError))
-            throw err;
-    }
-    return searchParams;
-}
-function parseHideStack(searchParams) {
-    if (searchParams.has("hide_stack")) {
-        return searchParams.get("hide_stack") === "true";
-    }
-    return DEFAULTS.hideStack;
-}
-function parseSnakeSize(searchParams) {
-    if (searchParams.has("snake_size")) {
-        try {
-            const paramsSnakeSize = Number(searchParams.get("snake_size"));
-            if (Number.isNaN(paramsSnakeSize)) {
-                throw new Error("Invalid snake_size provided, snake_size must be a number");
-            }
-            if (!Number.isInteger(paramsSnakeSize)) {
-                throw new Error("Invalid snake_size provided, snake_size must be an integer");
-            }
-            if (paramsSnakeSize <= 0 || paramsSnakeSize > 9) {
-                throw new Error("Invalid snake_size provided, snake_size must be between 1 and 9");
-            }
-            return paramsSnakeSize;
-        }
-        catch (error) {
-            console.warn(error);
-            console.warn("Using default snake size...");
-        }
-    }
-    return DEFAULTS.snakeSize;
-}
 function parseColors(searchParams) {
     const drawColors = {
         ...palettes["default"],
@@ -3133,6 +3084,106 @@ function parseColors(searchParams) {
     }
     return drawColors;
 }
+
+;// CONCATENATED MODULE: ./parsers/parseSpeed.ts
+const SPEEDS = {
+    slow: 200,
+    normal: 150,
+    fast: 100,
+};
+function parseSpeed(searchParams) {
+    if (searchParams.has("speed")) {
+        const speed = searchParams.get("speed");
+        if (speed in SPEEDS) {
+            return SPEEDS[speed];
+        }
+        console.warn(`Speed '${speed}' is not a valid speed.`);
+        console.warn("Using default speed...");
+    }
+    return SPEEDS.normal;
+}
+
+;// CONCATENATED MODULE: ./parsers/parseDotShape.ts
+const SHAPES = {
+    square: {
+        sizeDot: 12,
+        sizeDotBorderRadius: 0,
+    },
+    "square-rounded": {
+        sizeDot: 12,
+        sizeDotBorderRadius: 2,
+    },
+    circle: {
+        sizeDot: 13,
+        sizeDotBorderRadius: Math.floor(13 / 2),
+    },
+};
+function parseDotShape(searchParams) {
+    try {
+        if (searchParams.has("dot_shape")) {
+            const shape = searchParams.get("dot_shape");
+            if (!(shape in SHAPES)) {
+                throw new Error(`Shape '${shape}' is not a valid option.`);
+            }
+            return SHAPES[shape];
+        }
+    }
+    catch (error) {
+        console.warn(error);
+        console.warn("Using default shape: 'square-rounded'");
+    }
+    return SHAPES["square-rounded"];
+}
+
+;// CONCATENATED MODULE: ./parsers/parseHideStack.ts
+const DEFAULT_HIDE_STACK = false;
+function parseHideStack(searchParams) {
+    if (searchParams.has("hide_stack")) {
+        return searchParams.get("hide_stack") === "true";
+    }
+    return DEFAULT_HIDE_STACK;
+}
+
+;// CONCATENATED MODULE: ./parsers/index.ts
+
+
+
+
+
+
+
+;// CONCATENATED MODULE: ./outputsOptions.ts
+
+const parseOutputsOption = (lines) => lines.map(parseEntry);
+const parseEntry = (entry) => {
+    const m = entry.trim().match(/^(.+\.(svg|gif))(\?(.*)|\s*({.*}))?$/);
+    if (!m)
+        return null;
+    const [, filename, format, _, q1, q2] = m;
+    const query = q1 ?? q2;
+    const searchParams = parseQuery(query);
+    const hideStack = parseHideStack(searchParams);
+    const snakeSize = parseSnakeSize(searchParams);
+    const colors = parseColors(searchParams);
+    const shape = parseDotShape(searchParams);
+    const drawOptions = {
+        sizeCell: 16,
+        hideStack,
+        ...colors,
+        ...shape,
+    };
+    const animationOptions = {
+        step: 1,
+        frameDuration: parseSpeed(searchParams),
+    };
+    return {
+        filename,
+        format: format,
+        drawOptions,
+        animationOptions,
+        snakeSize,
+    };
+};
 
 ;// CONCATENATED MODULE: ./index.ts
 

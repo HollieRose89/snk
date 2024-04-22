@@ -4,7 +4,7 @@ author: "Arthurlobopro"
 
 runs:
   using: docker
-  image: docker://arthurlobo/snk@sha256:9be50abab75828462b1eeca79269e344dbed19883c42cfa2311a301c734d3860
+  image: docker://arthurlobo/snk@sha256:c77e609524f8ff86c42ca7b8d72b63c2fb99b27b969a94107e7f58b0877c51c7
 
 inputs:
   github_user_name:
