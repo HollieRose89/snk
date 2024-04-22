@@ -1,4 +1,6 @@
 const DEFAULT_SNAKE_SIZE = 4;
+const MIN_SIZE = 1;
+const MAX_SIZE = 6;
 
 export function parseSnakeSize(searchParams: URLSearchParams) {
   if (searchParams.has("snake_size")) {
@@ -17,9 +19,9 @@ export function parseSnakeSize(searchParams: URLSearchParams) {
         );
       }
 
-      if (paramsSnakeSize <= 0 || paramsSnakeSize > 9) {
+      if (paramsSnakeSize < MIN_SIZE || paramsSnakeSize > MAX_SIZE) {
         throw new Error(
-          "Invalid snake_size provided, snake_size must be between 1 and 9"
+          `Invalid snake_size provided, snake_size must be between ${MIN_SIZE} and ${MAX_SIZE}`
         );
       }
 

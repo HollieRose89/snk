@@ -56,7 +56,7 @@ Available as github action. It can automatically generate a new image each day. 
     #               By default is square-rounded.
     #  - speed: The speed of animation, must be one of [fast, normal, slow].
     #           By default is normal
-    #  - snake_size: The size of the snake, must be a number between 1 and 9.
+    #  - snake_size: The size of the snake, must be a number between 1 and 6.
     #                By default is 4.
 
     outputs: |
