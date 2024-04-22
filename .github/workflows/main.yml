@@ -79,16 +79,26 @@ jobs:
           outputs: |
             dist/grid-snake.svg
             dist/grid-snake-dark.svg?palette=github-dark
-            dist/grid-without-progressbar.svg?hide_stack=true
-            dist/grid-snake-long.svg?snake_size=5
 
       - name: ensure the generated file exists
         run: |
           ls dist
           test -f dist/grid-snake.svg
           test -f dist/grid-snake-dark.svg
-          test -f dist/grid-without-progressbar.svg
-          test -f dist/grid-snake-long.svg
+
+      - name: Generate Without Progressbar
+        uses: ./svg-only
+        with:
+          github_user_name: arthurlobopro
+          outputs: |
+            dist/stack/grid-without-progressbar.svg?hide_stack=true
+            dist/stack/grid-without-progressbar-dark.svg?hide_stack=true&palette=github-dark
+
+      - name: ensure the generated file exists
+        run: |
+          ls dist/stack
+          test -f dist/stack/grid-without-progressbar.svg
+          test -f dist/stack/grid-without-progressbar-dark.svg
 
       - name: Generate Snake Sizes
         uses: ./svg-only
