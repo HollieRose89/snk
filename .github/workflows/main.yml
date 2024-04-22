@@ -148,20 +148,20 @@ jobs:
           github_user_name: arthurlobopro
           outputs: |
             dist/shape/grid-snake-square.svg?dot_shape=square
-            dist/shape/grid-snake-rounded-square.svg?dot_shape=rounded-square
+            dist/shape/grid-snake-square-rounded.svg?dot_shape=square-rounded
             dist/shape/grid-snake-circle.svg?dot_shape=circle
             dist/shape/grid-snake-square-dark.svg?dot_shape=square&palette=github-dark
-            dist/shape/grid-snake-rounded-square-dark.svg?dot_shape=rounded-square&palette=github-dark
+            dist/shape/grid-snake-square-rounded-dark.svg?dot_shape=square-rounded&palette=github-dark
             dist/shape/grid-snake-circle-dark.svg?dot_shape=circle&palette=github-dark
 
       - name: Ensure Speed Outputs Exists
         run: |
           ls dist/shape
           test -f dist/shape/grid-snake-square.svg
-          test -f dist/shape/grid-snake-rounded-square.svg
+          test -f dist/shape/grid-snake-square-rounded.svg
           test -f dist/shape/grid-snake-circle.svg
           test -f dist/shape/grid-snake-square-dark.svg
-          test -f dist/shape/grid-snake-rounded-square-dark.svg
+          test -f dist/shape/grid-snake-square-rounded-dark.svg
           test -f dist/shape/grid-snake-circle-dark.svg
 
       - uses: crazy-max/ghaction-github-pages@v3.1.0
