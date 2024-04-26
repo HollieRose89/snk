@@ -1,8 +1,16 @@
 # Speed samples
 
-The `speed` option must be one of `slow`, `normal` or `fast`.
+The `speed` option must be one of `auto`, `slow`, `normal` or `fast`.
 
 Here are some `speed` samples:
+
+### speed=auto
+
+The `auto` option set the snake speed based on the number of contribution dots, here is the rules:
+
+- If you have less than 1/3 of the grid, the speed will be [slow](#speedslow)
+- If you have more than 1/3 but less than 2/3 of the grid, the speed will be [normal](#speednormal)
+- If you have more than 2/3 of the grid, the speed will be [fast](#speedfast)
 
 ### speed=slow
 
