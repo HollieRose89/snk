@@ -620,7 +620,10 @@ const getPathToPose = (snake0, target, grid) => {
     }
 };
 
+// EXTERNAL MODULE: ./parsers/index.ts + 7 modules
+var parsers = __webpack_require__(4618);
 ;// CONCATENATED MODULE: ./generateContributionSnake.ts
+
 
 
 
@@ -634,6 +637,9 @@ const generateContributionSnake = async (userName, outputs, options) => {
         if (!out)
             return;
         const { format, drawOptions, animationOptions, snakeSize } = out;
+        if (animationOptions.detectSpeed) {
+            animationOptions.frameDuration = (0,parsers/* calculateAutoSpeed */.hC)(cells);
+        }
         const snake = createSnakeFromSize(snakeSize);
         console.log(`📡 computing best route for ${i}° snake`);
         const chain = getBestRoute(grid, snake);

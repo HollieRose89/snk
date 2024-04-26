@@ -2688,6 +2688,229 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 4618:
+/***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  "hC": () => (/* reexport */ calculateAutoSpeed),
+  "Rx": () => (/* reexport */ parseColors),
+  "NG": () => (/* reexport */ parseDotShape),
+  "ZS": () => (/* reexport */ parseHideStack),
+  "mB": () => (/* reexport */ parseQuery),
+  "xQ": () => (/* reexport */ parseSnakeSize),
+  "eT": () => (/* reexport */ parseSpeed)
+});
+
+// UNUSED EXPORTS: SPEEDS
+
+;// CONCATENATED MODULE: ./parsers/parseSnakeSize.ts
+const DEFAULT_SNAKE_SIZE = 4;
+const MIN_SIZE = 1;
+const MAX_SIZE = 6;
+function parseSnakeSize(searchParams) {
+    if (searchParams.has("snake_size")) {
+        try {
+            const paramsSnakeSize = Number(searchParams.get("snake_size"));
+            if (Number.isNaN(paramsSnakeSize)) {
+                throw new Error("Invalid snake_size provided, snake_size must be a number");
+            }
+            if (!Number.isInteger(paramsSnakeSize)) {
+                throw new Error("Invalid snake_size provided, snake_size must be an integer");
+            }
+            if (paramsSnakeSize < MIN_SIZE || paramsSnakeSize > MAX_SIZE) {
+                throw new Error(`Invalid snake_size provided, snake_size must be between ${MIN_SIZE} and ${MAX_SIZE}`);
+            }
+            return paramsSnakeSize;
+        }
+        catch (error) {
+            console.warn(error);
+            console.warn("Using default snake size...");
+        }
+    }
+    return DEFAULT_SNAKE_SIZE;
+}
+
+;// CONCATENATED MODULE: ./parsers/parseQuery.ts
+function parseQuery(query) {
+    let searchParams = new URLSearchParams(query || "");
+    try {
+        const o = JSON.parse(query);
+        if (Array.isArray(o.color_dots)) {
+            o.color_dots = o.color_dots.join(",");
+        }
+        if (Array.isArray(o.dark_color_dots)) {
+            o.dark_color_dots = o.dark_color_dots.join(",");
+        }
+        searchParams = new URLSearchParams(o);
+    }
+    catch (err) {
+        if (!(err instanceof SyntaxError))
+            throw err;
+    }
+    return searchParams;
+}
+
+;// CONCATENATED MODULE: ./palettes.ts
+const basePalettes = {
+    "github-light": {
+        colorDotBorder: "#1b1f230a",
+        colorDots: ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
+        colorEmpty: "#ebedf0",
+        colorSnake: "purple",
+    },
+    "github-dark": {
+        colorDotBorder: "#1b1f230a",
+        colorEmpty: "#161b22",
+        colorDots: ["#161b22", "#01311f", "#034525", "#0f6d31", "#00c647"],
+        colorSnake: "purple",
+    },
+};
+// aliases
+const palettes = { ...basePalettes };
+palettes["github"] = palettes["github-light"];
+palettes["default"] = palettes["github"];
+
+;// CONCATENATED MODULE: ./parsers/parseColors.ts
+
+function parseColors(searchParams) {
+    const drawColors = {
+        ...palettes["default"],
+        dark: palettes["default"].dark && { ...palettes["default"].dark },
+    };
+    {
+        const palette = palettes[searchParams.get("palette")];
+        if (palette) {
+            Object.assign(drawColors, palette);
+            drawColors.dark = palette.dark && { ...palette.dark };
+        }
+    }
+    {
+        const dark_palette = palettes[searchParams.get("dark_palette")];
+        if (dark_palette) {
+            const clone = { ...dark_palette, dark: undefined };
+            drawColors.dark = clone;
+        }
+    }
+    if (searchParams.has("color_snake")) {
+        drawColors.colorSnake = searchParams.get("color_snake");
+    }
+    if (searchParams.has("color_dots")) {
+        const colors = searchParams.get("color_dots").split(/[,;]/);
+        drawColors.colorDots = colors;
+        drawColors.colorEmpty = colors[0];
+        drawColors.dark = undefined;
+    }
+    if (searchParams.has("color_dot_border")) {
+        drawColors.colorDotBorder = searchParams.get("color_dot_border");
+    }
+    if (searchParams.has("dark_color_dots")) {
+        const colors = searchParams.get("dark_color_dots").split(/[,;]/);
+        drawColors.dark = {
+            colorDotBorder: drawColors.colorDotBorder,
+            colorSnake: drawColors.colorSnake,
+            ...drawColors.dark,
+            colorDots: colors,
+            colorEmpty: colors[0],
+        };
+    }
+    if (searchParams.has("dark_color_dot_border") && drawColors.dark) {
+        drawColors.dark.colorDotBorder = searchParams.get("color_dot_border");
+    }
+    if (searchParams.has("dark_color_snake") && drawColors.dark) {
+        drawColors.dark.colorSnake = searchParams.get("color_snake");
+    }
+    return drawColors;
+}
+
+;// CONCATENATED MODULE: ./parsers/parseSpeed.ts
+const SPEEDS = {
+    slow: 200,
+    normal: 150,
+    fast: 100,
+    auto: "auto",
+};
+function parseSpeed(searchParams) {
+    if (searchParams.has("speed")) {
+        const speed = searchParams.get("speed");
+        if (speed in SPEEDS) {
+            return SPEEDS[speed];
+        }
+        console.warn(`Speed '${speed}' is not a valid speed.`);
+        console.warn("Using default speed...");
+    }
+    return SPEEDS.normal;
+}
+function calculateAutoSpeed(cells) {
+    const void_cells = cells.reduce((prev, current) => {
+        if (current.level === 0) {
+            prev++;
+        }
+        return prev;
+    }, 0);
+    if (void_cells >= cells.length * (2 / 3)) {
+        return SPEEDS.slow;
+    }
+    if (void_cells >= cells.length * (1 / 3)) {
+        return SPEEDS.normal;
+    }
+    return SPEEDS.fast;
+}
+
+;// CONCATENATED MODULE: ./parsers/parseDotShape.ts
+const SHAPES = {
+    square: {
+        sizeDot: 12,
+        sizeDotBorderRadius: 0,
+    },
+    "square-rounded": {
+        sizeDot: 12,
+        sizeDotBorderRadius: 2,
+    },
+    circle: {
+        sizeDot: 13,
+        sizeDotBorderRadius: Math.floor(13 / 2),
+    },
+};
+function parseDotShape(searchParams) {
+    try {
+        if (searchParams.has("dot_shape")) {
+            const shape = searchParams.get("dot_shape");
+            if (!(shape in SHAPES)) {
+                throw new Error(`Shape '${shape}' is not a valid option.`);
+            }
+            return SHAPES[shape];
+        }
+    }
+    catch (error) {
+        console.warn(error);
+        console.warn("Using default shape: 'square-rounded'");
+    }
+    return SHAPES["square-rounded"];
+}
+
+;// CONCATENATED MODULE: ./parsers/parseHideStack.ts
+const DEFAULT_HIDE_STACK = false;
+function parseHideStack(searchParams) {
+    if (searchParams.has("hide_stack")) {
+        return searchParams.get("hide_stack") === "true";
+    }
+    return DEFAULT_HIDE_STACK;
+}
+
+;// CONCATENATED MODULE: ./parsers/index.ts
+
+
+
+
+
+
+
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -2966,192 +3189,8 @@ var external_fs_ = __nccwpck_require__(7147);
 var external_path_ = __nccwpck_require__(1017);
 // EXTERNAL MODULE: ../../node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(7117);
-;// CONCATENATED MODULE: ./parsers/parseSnakeSize.ts
-const DEFAULT_SNAKE_SIZE = 4;
-const MIN_SIZE = 1;
-const MAX_SIZE = 6;
-function parseSnakeSize(searchParams) {
-    if (searchParams.has("snake_size")) {
-        try {
-            const paramsSnakeSize = Number(searchParams.get("snake_size"));
-            if (Number.isNaN(paramsSnakeSize)) {
-                throw new Error("Invalid snake_size provided, snake_size must be a number");
-            }
-            if (!Number.isInteger(paramsSnakeSize)) {
-                throw new Error("Invalid snake_size provided, snake_size must be an integer");
-            }
-            if (paramsSnakeSize < MIN_SIZE || paramsSnakeSize > MAX_SIZE) {
-                throw new Error(`Invalid snake_size provided, snake_size must be between ${MIN_SIZE} and ${MAX_SIZE}`);
-            }
-            return paramsSnakeSize;
-        }
-        catch (error) {
-            console.warn(error);
-            console.warn("Using default snake size...");
-        }
-    }
-    return DEFAULT_SNAKE_SIZE;
-}
-
-;// CONCATENATED MODULE: ./parsers/parseQuery.ts
-function parseQuery(query) {
-    let searchParams = new URLSearchParams(query || "");
-    try {
-        const o = JSON.parse(query);
-        if (Array.isArray(o.color_dots)) {
-            o.color_dots = o.color_dots.join(",");
-        }
-        if (Array.isArray(o.dark_color_dots)) {
-            o.dark_color_dots = o.dark_color_dots.join(",");
-        }
-        searchParams = new URLSearchParams(o);
-    }
-    catch (err) {
-        if (!(err instanceof SyntaxError))
-            throw err;
-    }
-    return searchParams;
-}
-
-;// CONCATENATED MODULE: ./palettes.ts
-const basePalettes = {
-    "github-light": {
-        colorDotBorder: "#1b1f230a",
-        colorDots: ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
-        colorEmpty: "#ebedf0",
-        colorSnake: "purple",
-    },
-    "github-dark": {
-        colorDotBorder: "#1b1f230a",
-        colorEmpty: "#161b22",
-        colorDots: ["#161b22", "#01311f", "#034525", "#0f6d31", "#00c647"],
-        colorSnake: "purple",
-    },
-};
-// aliases
-const palettes = { ...basePalettes };
-palettes["github"] = palettes["github-light"];
-palettes["default"] = palettes["github"];
-
-;// CONCATENATED MODULE: ./parsers/parseColors.ts
-
-function parseColors(searchParams) {
-    const drawColors = {
-        ...palettes["default"],
-        dark: palettes["default"].dark && { ...palettes["default"].dark },
-    };
-    {
-        const palette = palettes[searchParams.get("palette")];
-        if (palette) {
-            Object.assign(drawColors, palette);
-            drawColors.dark = palette.dark && { ...palette.dark };
-        }
-    }
-    {
-        const dark_palette = palettes[searchParams.get("dark_palette")];
-        if (dark_palette) {
-            const clone = { ...dark_palette, dark: undefined };
-            drawColors.dark = clone;
-        }
-    }
-    if (searchParams.has("color_snake")) {
-        drawColors.colorSnake = searchParams.get("color_snake");
-    }
-    if (searchParams.has("color_dots")) {
-        const colors = searchParams.get("color_dots").split(/[,;]/);
-        drawColors.colorDots = colors;
-        drawColors.colorEmpty = colors[0];
-        drawColors.dark = undefined;
-    }
-    if (searchParams.has("color_dot_border")) {
-        drawColors.colorDotBorder = searchParams.get("color_dot_border");
-    }
-    if (searchParams.has("dark_color_dots")) {
-        const colors = searchParams.get("dark_color_dots").split(/[,;]/);
-        drawColors.dark = {
-            colorDotBorder: drawColors.colorDotBorder,
-            colorSnake: drawColors.colorSnake,
-            ...drawColors.dark,
-            colorDots: colors,
-            colorEmpty: colors[0],
-        };
-    }
-    if (searchParams.has("dark_color_dot_border") && drawColors.dark) {
-        drawColors.dark.colorDotBorder = searchParams.get("color_dot_border");
-    }
-    if (searchParams.has("dark_color_snake") && drawColors.dark) {
-        drawColors.dark.colorSnake = searchParams.get("color_snake");
-    }
-    return drawColors;
-}
-
-;// CONCATENATED MODULE: ./parsers/parseSpeed.ts
-const SPEEDS = {
-    slow: 200,
-    normal: 150,
-    fast: 100,
-};
-function parseSpeed(searchParams) {
-    if (searchParams.has("speed")) {
-        const speed = searchParams.get("speed");
-        if (speed in SPEEDS) {
-            return SPEEDS[speed];
-        }
-        console.warn(`Speed '${speed}' is not a valid speed.`);
-        console.warn("Using default speed...");
-    }
-    return SPEEDS.normal;
-}
-
-;// CONCATENATED MODULE: ./parsers/parseDotShape.ts
-const SHAPES = {
-    square: {
-        sizeDot: 12,
-        sizeDotBorderRadius: 0,
-    },
-    "square-rounded": {
-        sizeDot: 12,
-        sizeDotBorderRadius: 2,
-    },
-    circle: {
-        sizeDot: 13,
-        sizeDotBorderRadius: Math.floor(13 / 2),
-    },
-};
-function parseDotShape(searchParams) {
-    try {
-        if (searchParams.has("dot_shape")) {
-            const shape = searchParams.get("dot_shape");
-            if (!(shape in SHAPES)) {
-                throw new Error(`Shape '${shape}' is not a valid option.`);
-            }
-            return SHAPES[shape];
-        }
-    }
-    catch (error) {
-        console.warn(error);
-        console.warn("Using default shape: 'square-rounded'");
-    }
-    return SHAPES["square-rounded"];
-}
-
-;// CONCATENATED MODULE: ./parsers/parseHideStack.ts
-const DEFAULT_HIDE_STACK = false;
-function parseHideStack(searchParams) {
-    if (searchParams.has("hide_stack")) {
-        return searchParams.get("hide_stack") === "true";
-    }
-    return DEFAULT_HIDE_STACK;
-}
-
-;// CONCATENATED MODULE: ./parsers/index.ts
-
-
-
-
-
-
-
+// EXTERNAL MODULE: ./parsers/index.ts + 7 modules
+var parsers = __nccwpck_require__(4618);
 ;// CONCATENATED MODULE: ./outputsOptions.ts
 
 const parseOutputsOption = (lines) => lines.map(parseEntry);
@@ -3161,20 +3200,28 @@ const parseEntry = (entry) => {
         return null;
     const [, filename, format, _, q1, q2] = m;
     const query = q1 ?? q2;
-    const searchParams = parseQuery(query);
-    const hideStack = parseHideStack(searchParams);
-    const snakeSize = parseSnakeSize(searchParams);
-    const colors = parseColors(searchParams);
-    const shape = parseDotShape(searchParams);
+    const searchParams = (0,parsers/* parseQuery */.mB)(query);
+    const hideStack = (0,parsers/* parseHideStack */.ZS)(searchParams);
+    const snakeSize = (0,parsers/* parseSnakeSize */.xQ)(searchParams);
+    const colors = (0,parsers/* parseColors */.Rx)(searchParams);
+    const shape = (0,parsers/* parseDotShape */.NG)(searchParams);
     const drawOptions = {
         sizeCell: 16,
         hideStack,
         ...colors,
         ...shape,
     };
+    const speed = (0,parsers/* parseSpeed */.eT)(searchParams);
     const animationOptions = {
         step: 1,
-        frameDuration: parseSpeed(searchParams),
+        ...(speed === "auto"
+            ? {
+                frameDuration: 150,
+                detectSpeed: true,
+            }
+            : {
+                frameDuration: speed,
+            }),
     };
     return {
         filename,
