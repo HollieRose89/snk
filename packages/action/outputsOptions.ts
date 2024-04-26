@@ -11,6 +11,10 @@ import {
 
 export const parseOutputsOption = (lines: string[]) => lines.map(parseEntry);
 
+export interface ParsedAnimationOptions extends AnimationOptions {
+  detectSpeed?: true
+}
+
 export const parseEntry = (entry: string) => {
   const m = entry.trim().match(/^(.+\.(svg|gif))(\?(.*)|\s*({.*}))?$/);
 
@@ -33,9 +37,16 @@ export const parseEntry = (entry: string) => {
     ...shape,
   };
 
-  const animationOptions: AnimationOptions = {
+  const speed = parseSpeed(searchParams)
+
+  const animationOptions: ParsedAnimationOptions = {
     step: 1,
-    frameDuration: parseSpeed(searchParams),
+    ...(speed === "auto" ? {
+      frameDuration: 150,
+      detectSpeed: true
+    } : {
+      frameDuration: speed
+    })
   };
 
   return {

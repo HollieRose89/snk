@@ -4,14 +4,15 @@ import { getBestRoute } from "@snk/solver/getBestRoute";
 import { createSnakeFromSize } from "@snk/types/__fixtures__/createSnakeFromSize";
 import { getPathToPose } from "@snk/solver/getPathToPose";
 import type { DrawOptions as DrawOptions } from "@snk/svg-creator";
-import type { AnimationOptions } from "@snk/gif-creator";
+import { ParsedAnimationOptions } from "./outputsOptions";
+import { calculateAutoSpeed } from "./parsers";
 
 export const generateContributionSnake = async (
   userName: string,
   outputs: ({
     format: "svg" | "gif";
     drawOptions: DrawOptions;
-    animationOptions: AnimationOptions;
+    animationOptions: ParsedAnimationOptions;
     snakeSize: number;
   } | null)[],
   options: { githubToken: string }
@@ -25,6 +26,10 @@ export const generateContributionSnake = async (
       if (!out) return;
 
       const { format, drawOptions, animationOptions, snakeSize } = out;
+
+      if (animationOptions.detectSpeed) {
+        animationOptions.frameDuration = calculateAutoSpeed(cells)
+      }
 
       const snake = createSnakeFromSize(snakeSize);
 
