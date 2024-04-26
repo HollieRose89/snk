@@ -4,7 +4,7 @@ export const SPEEDS = {
   slow: 200,
   normal: 150,
   fast: 100,
-  auto: "auto"
+  auto: "auto",
 } as const;
 
 export function parseSpeed(searchParams: URLSearchParams) {
@@ -25,19 +25,19 @@ export function parseSpeed(searchParams: URLSearchParams) {
 export function calculateAutoSpeed(cells: Cell[]) {
   const void_cells = cells.reduce((prev, current) => {
     if (current.level === 0) {
-      prev++
+      prev++;
     }
 
-    return prev
-  }, 0)
+    return prev;
+  }, 0);
 
   if (void_cells >= cells.length * (2 / 3)) {
-    return SPEEDS.slow
+    return SPEEDS.slow;
   }
 
   if (void_cells >= cells.length * (1 / 3)) {
-    return SPEEDS.normal
+    return SPEEDS.normal;
   }
 
-  return SPEEDS.fast
+  return SPEEDS.fast;
 }

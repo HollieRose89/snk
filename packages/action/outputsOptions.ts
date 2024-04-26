@@ -12,7 +12,7 @@ import {
 export const parseOutputsOption = (lines: string[]) => lines.map(parseEntry);
 
 export interface ParsedAnimationOptions extends AnimationOptions {
-  detectSpeed?: true
+  detectSpeed?: true;
 }
 
 export const parseEntry = (entry: string) => {
@@ -37,16 +37,18 @@ export const parseEntry = (entry: string) => {
     ...shape,
   };
 
-  const speed = parseSpeed(searchParams)
+  const speed = parseSpeed(searchParams);
 
   const animationOptions: ParsedAnimationOptions = {
     step: 1,
-    ...(speed === "auto" ? {
-      frameDuration: 150,
-      detectSpeed: true
-    } : {
-      frameDuration: speed
-    })
+    ...(speed === "auto"
+      ? {
+          frameDuration: 150,
+          detectSpeed: true,
+        }
+      : {
+          frameDuration: speed,
+        }),
   };
 
   return {

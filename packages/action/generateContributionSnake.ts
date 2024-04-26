@@ -28,7 +28,7 @@ export const generateContributionSnake = async (
       const { format, drawOptions, animationOptions, snakeSize } = out;
 
       if (animationOptions.detectSpeed) {
-        animationOptions.frameDuration = calculateAutoSpeed(cells)
+        animationOptions.frameDuration = calculateAutoSpeed(cells);
       }
 
       const snake = createSnakeFromSize(snakeSize);
