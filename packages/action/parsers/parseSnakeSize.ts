@@ -1,6 +1,6 @@
-const DEFAULT_SNAKE_SIZE = 4;
+const DEFAULT_SNAKE_SIZE = 9;
 const MIN_SIZE = 1;
-const MAX_SIZE = 6;
+const MAX_SIZE = 9;
 
 export function parseSnakeSize(searchParams: URLSearchParams) {
   if (searchParams.has("snake_size")) {
