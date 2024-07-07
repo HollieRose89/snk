@@ -2707,9 +2707,9 @@ __nccwpck_require__.d(__webpack_exports__, {
 // UNUSED EXPORTS: SPEEDS
 
 ;// CONCATENATED MODULE: ./parsers/parseSnakeSize.ts
-const DEFAULT_SNAKE_SIZE = 4;
+const DEFAULT_SNAKE_SIZE = 9;
 const MIN_SIZE = 1;
-const MAX_SIZE = 6;
+const MAX_SIZE = 9;
 function parseSnakeSize(searchParams) {
     if (searchParams.has("snake_size")) {
         try {
