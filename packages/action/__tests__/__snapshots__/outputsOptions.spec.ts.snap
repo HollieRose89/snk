@@ -25,7 +25,7 @@ exports[`should parse /out.svg?{"color_snake":"yellow","color_dots":["#000","#11
   },
   "filename": "/out.svg",
   "format": "svg",
-  "snakeSize": 4,
+  "snakeSize": 9,
 }
 `;
 
@@ -54,7 +54,7 @@ exports[`should parse /out.svg?color_snake=orange&color_dots=#000,#111,#222,#333
   },
   "filename": "/out.svg",
   "format": "svg",
-  "snakeSize": 4,
+  "snakeSize": 9,
 }
 `;
 
@@ -94,7 +94,7 @@ exports[`should parse /out.svg?color_snake=orange&color_dots=#000,#111,#222,#333
   },
   "filename": "/out.svg",
   "format": "svg",
-  "snakeSize": 4,
+  "snakeSize": 9,
 }
 `;
 
@@ -123,6 +123,6 @@ exports[`should parse path/to/out.gif 1`] = `
   },
   "filename": "path/to/out.gif",
   "format": "gif",
-  "snakeSize": 4,
+  "snakeSize": 9,
 }
 `;
