@@ -4,7 +4,7 @@ author: "Arthurlobopro"
 
 runs:
   using: docker
-  image: docker://paddyzz/snk:v0.0.6
+  image: docker://paddyzz/snk:v0.0.7
 
 inputs:
   github_user_name:
