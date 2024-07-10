@@ -4,8 +4,7 @@ author: "Arthurlobopro"
 
 runs:
   using: docker
-  image: docker://paddyzz/snk:v0.0.8_snakeSize8_snakeCellLarge
-
+  image: docker://paddyzz/snk:v0.0.8_snakeSize8_snakeCellSmall
 inputs:
   github_user_name:
     description: "github user name"
